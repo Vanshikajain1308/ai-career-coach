@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import {
   LineChart,
   Line,
@@ -16,20 +17,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
 import { format } from "date-fns";
 
 export default function PerformanceChart({ assessments }) {
-  const [chartData, setChartData] = useState([]);
-
-  useEffect(() => {
-    if (assessments) {
-      const formattedData = assessments.map((assessment) => ({
-        date: format(new Date(assessment.createdAt), "MMM dd"),
-        score: assessment.quizScore,
-      }));
-      setChartData(formattedData);
-    }
+  // ✅ replaced useEffect + useState with useMemo
+  const chartData = useMemo(() => {
+    if (!assessments) return [];
+    return assessments.map((assessment) => ({
+      date: format(new Date(assessment.createdAt), "MMM dd"),
+      score: assessment.quizScore,
+    }));
   }, [assessments]);
 
   return (
